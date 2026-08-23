@@ -52,12 +52,6 @@ print(f"Previous state: {previous}")
 print(f"Current state:  {current}")
 
 # Only alert when Jude changes from unavailable to available.
-# TEMPORARY DISCORD TEST
-requests.post(
-    WEBHOOK,
-    json={"content": "🌹🚨 **TEST ALERT — JUDE WATCH IS WORKING!** 🚨🌹"},
-    timeout=30
-)
 if current == "available" and previous != "available":
 
     message = {
