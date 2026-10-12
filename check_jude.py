@@ -6,7 +6,7 @@ URL = "https://www.davidaustinroses.co.uk/products/jude-the-obscure"
 WEBHOOK = os.environ["DISCORD_WEBHOOK"]
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 }
 
 response = requests.get(URL, headers=headers, timeout=30)
@@ -17,24 +17,18 @@ soup = BeautifulSoup(response.text, "html.parser")
 # Find the product page text.
 text = soup.get_text(" ", strip=True).lower()
 
-# Jude is considered available if the page contains a purchase option
-# and does NOT describe the bare-root product as out of stock.
+# Jude is available if the buy button text appears on the page.
 has_purchase_option = (
     "add to basket" in text
     or "add to bag" in text
     or "buy now" in text
 )
 
-explicitly_out = (
-    "out of stock" in text
-)
-
-available = has_purchase_option and not explicitly_out
+available = has_purchase_option
 
 print("Jude availability check")
 print("-----------------------")
 print(f"Purchase option found: {has_purchase_option}")
-print(f"Explicitly out of stock: {explicitly_out}")
 print(f"AVAILABLE: {available}")
 
 # GitHub Actions gives us the previous state through a small file.
