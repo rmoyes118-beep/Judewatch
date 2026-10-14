@@ -15,6 +15,12 @@ ROSES = [
         "state_file": "lady_emma_state.txt",
         "display_name": "Lady Emma Hamilton (Ausbrother)",
     },
+    {
+        "name": "Munstead Wood",
+        "slug": "munstead-wood",
+        "state_file": "munstead_wood_state.txt",
+        "display_name": "Munstead Wood (Ausbernard)",
+    },
 ]
 
 WEBHOOK = os.environ["DISCORD_WEBHOOK"]
@@ -51,14 +57,20 @@ for rose in ROSES:
     print(f"Purchase option found: {has_purchase_option}")
     print(f"AVAILABLE: {available}")
 
-    # GitHub Actions state file per rose
+    # Explicit state file creation & reading logic
     state_file = rose["state_file"]
 
-    try:
-        with open(state_file, "r") as f:
-            previous = f.read().strip()
-    except FileNotFoundError:
+    if not os.path.exists(state_file):
+        print(f"State file {state_file} not found. Creating a new one...")
+        with open(state_file, "w") as f:
+            f.write("unknown")
         previous = "unknown"
+    else:
+        try:
+            with open(state_file, "r") as f:
+                previous = f.read().strip()
+        except Exception:
+            previous = "unknown"
 
     current = "available" if available else "unavailable"
 
@@ -88,5 +100,6 @@ for rose in ROSES:
 
         print(f"🚨 Discord stock alert sent for {rose['name']}!")
 
+    # Write current state back to file
     with open(state_file, "w") as f:
         f.write(current)
